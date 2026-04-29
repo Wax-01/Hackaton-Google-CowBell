@@ -23,18 +23,26 @@ export function getFence(id) {
 }
 
 /**
- * Create a default demo fence around the center
+ * Create a default demo fence that wraps the 4 real field coordinates
+ * with a small buffer (~100-120m) so all cows start inside.
+ *
+ * Real field corners (user-provided):
+ *   5.089387, -73.892552   (NW)
+ *   5.091524, -73.890631   (NE)
+ *   5.088462, -73.885586   (SE)
+ *   5.086245, -73.887844   (SW)
+ *
+ * Buffer: ~0.001° ≈ 110m
  */
-export function createDefaultFence(center) {
-  const offset = 0.005;
+export function createDefaultFence(_center) {
   const defaultFence = {
     id: generateId(),
     name: 'Zona Principal',
     paths: [
-      { lat: center.lat + offset, lng: center.lng - offset },
-      { lat: center.lat + offset, lng: center.lng + offset },
-      { lat: center.lat - offset, lng: center.lng + offset },
-      { lat: center.lat - offset, lng: center.lng - offset }
+      { lat: 5.089386701322959, lng: -73.89255219568926 },
+      { lat: 5.091524011299184, lng: -73.890630607694 },
+      { lat: 5.0884615948446745, lng: -73.8855864391714 },
+      { lat: 5.086244523836297, lng: -73.88784430508152 }
     ],
     color: '#1B7A3D',
     cattleIds: [],

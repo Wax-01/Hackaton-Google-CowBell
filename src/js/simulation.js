@@ -4,30 +4,45 @@
 
 import { bus, randomBetween, gaussianRandom, clamp, COW_NAMES } from './utils.js';
 
-// Center point: Zona ganadera de Colombia (Llanos Orientales)
-const CENTER_LAT = 5.067;
-const CENTER_LNG = -75.517;
-const SPREAD = 0.006; // ~600m spread
+// Center point: calculated centroid of the provided field coordinates
+const CENTER_LAT = 5.088904;
+const CENTER_LNG = -73.889153;
+const SPREAD = 0.0008; // ~80m spread for initial scatter of extra cows
+
+// Fixed initial positions moved closer to the center to avoid spawning on edges
+const INITIAL_POSITIONS = [
+  { lat: 5.089145, lng: -73.890852 }, // Cow 1 (NWish)
+  { lat: 5.090214, lng: -73.889891 }, // Cow 2 (NEish)
+  { lat: 5.088682, lng: -73.887369 }, // Cow 3 (SEish - will escape)
+  { lat: 5.087574, lng: -73.888498 }, // Cow 4 (SWish)
+];
 
 /**
  * Initial cattle data
  */
 function createInitialCattle() {
-  return COW_NAMES.slice(0, 8).map((name, i) => ({
-    id: `cow-${i + 1}`,
-    name: name,
-    number: i + 1,
-    lat: CENTER_LAT + randomBetween(-SPREAD, SPREAD),
-    lng: CENTER_LNG + randomBetween(-SPREAD, SPREAD),
-    temperature: randomBetween(37.8, 39.2),
-    activity: ['Pastando', 'Descansando', 'Caminando', 'Rumiando'][Math.floor(Math.random() * 4)],
-    heartRate: Math.floor(randomBetween(60, 80)),
-    status: 'normal', // normal | warning | danger
-    fenceId: null,
-    trail: [],
-    escapeScheduled: i === 2, // Cow #3 will escape for demo
-    escapeTimer: null
-  }));
+  return COW_NAMES.slice(0, 8).map((name, i) => {
+    // Use fixed positions for the first 4 cows, scatter the rest nearby
+    const pos = INITIAL_POSITIONS[i] ?? {
+      lat: CENTER_LAT + randomBetween(-SPREAD, SPREAD),
+      lng: CENTER_LNG + randomBetween(-SPREAD, SPREAD)
+    };
+    return {
+      id: `cow-${i + 1}`,
+      name: name,
+      number: i + 1,
+      lat: pos.lat,
+      lng: pos.lng,
+      temperature: randomBetween(37.8, 39.2),
+      activity: ['Pastando', 'Descansando', 'Caminando', 'Rumiando'][Math.floor(Math.random() * 4)],
+      heartRate: Math.floor(randomBetween(60, 80)),
+      status: 'normal', // normal | warning | danger
+      fenceId: null,
+      trail: [],
+      escapeScheduled: i === 2, // Cow #3 (Estrella) will escape for demo
+      escapeTimer: null
+    };
+  });
 }
 
 let cattle = createInitialCattle();
@@ -106,29 +121,29 @@ function updateCattle() {
     cow.trail.push({ lat: cow.lat, lng: cow.lng });
     if (cow.trail.length > 20) cow.trail.shift();
 
-    // Normal brownian movement
-    let deltaLat = gaussianRandom(0, 0.0002);
-    let deltaLng = gaussianRandom(0, 0.0002);
+    // Normal brownian movement — small steps (~4-5m per tick)
+    let deltaLat = gaussianRandom(0, 0.00004);
+    let deltaLng = gaussianRandom(0, 0.00004);
 
     // Cow #3 escape behavior after ~15 seconds (6 ticks)
     if (cow.escapeScheduled && tickCount >= 6 && tickCount < 20) {
-      // Move consistently in one direction to exit fence
-      deltaLat = 0.0006;
-      deltaLng = 0.0004;
+      // Move consistently toward the fence edge to exit
+      deltaLat = 0.00012;
+      deltaLng = 0.00008;
     }
 
-    // After escaping, slow random walk
+    // After escaping, slow random drift outside
     if (cow.escapeScheduled && tickCount >= 20) {
-      deltaLat = gaussianRandom(0.0001, 0.0002);
-      deltaLng = gaussianRandom(0.0001, 0.0002);
+      deltaLat = gaussianRandom(0.00002, 0.00004);
+      deltaLng = gaussianRandom(0.00002, 0.00004);
     }
 
     cow.lat += deltaLat;
     cow.lng += deltaLng;
 
-    // Keep within reasonable bounds
-    cow.lat = clamp(cow.lat, CENTER_LAT - 0.02, CENTER_LAT + 0.02);
-    cow.lng = clamp(cow.lng, CENTER_LNG - 0.02, CENTER_LNG + 0.02);
+    // Keep within reasonable bounds (~2km around center)
+    cow.lat = clamp(cow.lat, CENTER_LAT - 0.018, CENTER_LAT + 0.018);
+    cow.lng = clamp(cow.lng, CENTER_LNG - 0.018, CENTER_LNG + 0.018);
 
     // Update temperature with slight noise
     cow.temperature = clamp(
@@ -187,5 +202,6 @@ export function assignFenceToCow(cowId, fenceId) {
  * Get simulation center coordinates
  */
 export function getSimulationCenter() {
+  // Center is the centroid of the 4 provided field coordinates
   return { lat: CENTER_LAT, lng: CENTER_LNG };
 }
