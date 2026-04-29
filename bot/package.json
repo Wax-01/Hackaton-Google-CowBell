@@ -1,0 +1,16 @@
+{
+  "name": "cowbell-telegram-bot",
+  "version": "1.0.0",
+  "description": "CowBell - Bot de Telegram para gestión ganadera con IA",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.0",
+    "firebase-admin": "^13.0.0",
+    "node-telegram-bot-api": "^0.66.0"
+  }
+}
