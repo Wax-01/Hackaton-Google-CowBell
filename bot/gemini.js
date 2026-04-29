@@ -7,6 +7,7 @@
 // ============================================
 
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { COW_NAMES } from './firebase.js';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
@@ -127,8 +128,10 @@ const functionDeclarations = [
 // GEMINI MODEL CONFIGURATION
 // ============================================
 
+const cowNamesStr = COW_NAMES.map((n, i) => `${n} (#${i + 1})`).join(', ');
+
 const model = genAI.getGenerativeModel({
-  model: 'gemini-2.0-flash',
+  model: 'gemini-2.5-flash',
   systemInstruction: `Eres "Centinela", el asistente inteligente de CowBell, un sistema de cercas virtuales para ganadería.
 
 REGLAS IMPORTANTES:
@@ -145,7 +148,12 @@ CONTEXTO DEL SISTEMA:
 - CowBell monitorea ganado con GPS y sensores virtuales.
 - Cada vaca tiene: nombre, número, temperatura, frecuencia cardíaca, actividad, estado (normal/alerta/fuera), y una cerca asignada.
 - Las cercas son zonas geográficas donde el ganado debe permanecer.
-- Se generan alertas cuando una vaca sale de su cerca o se acerca al límite.`,
+- Se generan alertas cuando una vaca sale de su cerca o se acerca al límite.
+
+VACAS REGISTRADAS EN EL SISTEMA:
+${cowNamesStr}
+
+Cuando el usuario pregunte por una vaca, SIEMPRE usa la función consultar_ganado para obtener los datos reales. Si el nombre que da el usuario es parcial o tiene errores, intenta asociarlo a una de las vacas registradas arriba. Por ejemplo "la Loli" → "Lola", "la Mari" → "Mariposa", etc.`,
   tools: [{ functionDeclarations }]
 });
 
@@ -218,7 +226,7 @@ export async function sendFunctionResult(chat, functionName, result) {
 export async function processAudio(audioBuffer, mimeType = 'audio/ogg') {
   try {
     const audioModel = genAI.getGenerativeModel({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-2.5-flash',
       systemInstruction: `Eres "Centinela", el asistente de CowBell para ganadería. El usuario te envía un audio con instrucciones sobre su ganado. Escucha y extrae su intención. Responde SOLO con el texto de lo que dijo el usuario, sin agregar nada más. Si no entiendes, di "no_entendido".`,
     });
 

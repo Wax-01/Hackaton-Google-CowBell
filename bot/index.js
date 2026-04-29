@@ -14,6 +14,7 @@ import {
   handleTextMessage,
   handleVoiceMessage
 } from './handlers.js';
+import { initializeData } from './firebase.js';
 
 // ============================================
 // CONFIGURATION
@@ -46,6 +47,9 @@ console.log('');
 console.log('  ✅ Bot activo y escuchando...');
 console.log('  📱 t.me/CentinelaAgro_bot');
 console.log('');
+
+// Seed data in Firestore so the bot always has cow data to respond with
+await initializeData();
 
 // ============================================
 // COMMAND HANDLERS

@@ -3,6 +3,7 @@
 // ============================================
 
 import { bus, randomBetween, gaussianRandom, clamp, COW_NAMES } from './utils.js';
+import { syncCowToFirebase } from './firebase-config.js';
 
 // Center point: calculated centroid of the provided field coordinates
 const CENTER_LAT = 5.088904;
@@ -72,10 +73,18 @@ export function startSimulation() {
   if (isRunning) return;
   isRunning = true;
 
+  // Initial sync when simulation starts
+  cattle.forEach(cow => syncCowToFirebase(cow));
+
   simulationInterval = setInterval(() => {
     tickCount++;
     updateCattle();
     bus.emit('simulation:tick', { cattle, tickCount });
+    
+    // Sincronización con Firebase cada 4 ticks (~10 segundos)
+    if (tickCount % 4 === 0) {
+      cattle.forEach(cow => syncCowToFirebase(cow));
+    }
   }, TICK_MS);
 
   bus.emit('simulation:started');
@@ -183,6 +192,7 @@ export function updateCowStatus(cowId, status) {
     cow.status = status;
     if (oldStatus !== status) {
       bus.emit('cow:statusChanged', { cow, oldStatus, newStatus: status });
+      syncCowToFirebase(cow); // Sincronización inmediata al cambiar de estado
     }
   }
 }
@@ -195,6 +205,7 @@ export function assignFenceToCow(cowId, fenceId) {
   if (cow) {
     cow.fenceId = fenceId;
     bus.emit('cow:fenceAssigned', { cow, fenceId });
+    syncCowToFirebase(cow); // Sincronización inmediata al asignar cerca
   }
 }
 

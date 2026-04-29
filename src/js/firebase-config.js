@@ -120,4 +120,29 @@ export function onEvents(callback) {
   }
 }
 
+/**
+ * Sync a single cow's state to Firestore
+ */
+export async function syncCowToFirebase(cow) {
+  if (!firebaseReady) return;
+  try {
+    const ref = doc(db, 'cattle', cow.id);
+    await setDoc(ref, {
+      name: cow.name,
+      number: cow.number,
+      lat: cow.lat,
+      lng: cow.lng,
+      temperature: cow.temperature,
+      heartRate: cow.heartRate,
+      activity: cow.activity,
+      status: cow.status,
+      fenceId: cow.fenceId || null,
+      updatedAt: serverTimestamp(),
+      source: 'simulation'
+    }, { merge: true });
+  } catch (error) {
+    console.error('Error syncing cow data:', error);
+  }
+}
+
 export { db };

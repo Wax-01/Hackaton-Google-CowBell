@@ -31,7 +31,6 @@ export async function handleStart(bot, msg) {
     `Puedes hablarme como le hablarías a un amigo:\n\n` +
     `📝 *Escríbeme cosas como:*\n` +
     `• _"¿Cómo están las vacas?"_\n` +
-    `• _"Manda la Lola pa' la zona norte"_\n` +
     `• _"Registra una vaca nueva, se llama Estrella"_\n` +
     `• _"¿Hay alguna alerta?"_\n` +
     `• _"¿Cómo va la finca?"_\n\n` +
@@ -54,7 +53,6 @@ export async function handleHelp(bot, msg) {
     `🗺️ *Cercas y Zonas:*\n` +
     `• _"¿Cuáles zonas tengo?"_\n` +
     `• _"Crea una zona llamada Potrero 2"_\n` +
-    `• _"Manda la Lola a la zona norte"_\n\n` +
     `🔔 *Alertas:*\n` +
     `• _"¿Hay alertas?"_\n` +
     `• _"¿Qué ha pasado?"_\n\n` +
