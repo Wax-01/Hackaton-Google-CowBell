@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="CowBell Dashboard - Monitorea tu ganado en tiempo real con cercas virtuales inteligentes." />
+  <title>CowBell — Dashboard</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="stylesheet" href="/src/css/variables.css" />
+  <link rel="stylesheet" href="/src/css/dashboard.css" />
+</head>
+<body>
+
+  <div class="dashboard" id="dashboard">
+
+    <!-- ========== HEADER ========== -->
+    <header class="dash-header">
+      <a href="/" class="dash-brand">
+        <span class="brand-icon">🔔</span>
+        <span>COWBELL</span>
+      </a>
+      <div class="dash-header-actions">
+        <div class="dash-status">
+          <span class="dot"></span>
+          Simulación activa
+        </div>
+        <button class="btn-icon" id="btn-alerts" title="Alertas">
+          🔔
+        </button>
+        <button class="btn-icon" id="btn-history" title="Historial">
+          📋
+        </button>
+      </div>
+    </header>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <main class="dash-main">
+
+      <!-- Cattle Panel (sidebar on desktop, drawer on mobile) -->
+      <aside class="cattle-panel open" id="cattle-panel">
+        <div class="panel-header">
+          <h2>🐄 Ganado</h2>
+          <button class="panel-close" id="close-cattle-panel">✕</button>
+        </div>
+        <div class="panel-body">
+          <div class="cattle-list" id="cattle-list">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </aside>
+
+      <!-- Map Area -->
+      <div class="map-container">
+        <div id="map"></div>
+
+        <!-- Map Controls -->
+        <div class="map-controls">
+          <button class="map-control-btn" id="btn-draw-fence" title="Dibujar nueva cerca">
+            ✏️ Nueva Cerca
+          </button>
+          <button class="map-control-btn" id="btn-toggle-sim" title="Pausar/reanudar simulación">
+            ⏸️ Pausar
+          </button>
+        </div>
+
+        <!-- Map Stats -->
+        <div class="map-stats" id="map-stats">
+          <div class="map-stat-card success">
+            <div class="stat-value" id="stat-safe">0</div>
+            <div class="stat-label">Seguras</div>
+          </div>
+          <div class="map-stat-card warning">
+            <div class="stat-value" id="stat-warning">0</div>
+            <div class="stat-label">Alerta</div>
+          </div>
+          <div class="map-stat-card danger">
+            <div class="stat-value" id="stat-danger">0</div>
+            <div class="stat-label">Fuera</div>
+          </div>
+        </div>
+
+        <!-- Simulation Status -->
+        <div class="sim-control" id="sim-control">
+          <span class="sim-dot"></span>
+          <span id="sim-label">Simulación activa</span>
+        </div>
+
+        <!-- Fence Name Input -->
+        <div class="fence-name-input" id="fence-name-input">
+          <h4>🗺️ Nombre de la Cerca</h4>
+          <input type="text" id="fence-name" placeholder="Ej: Zona Norte, Potrero 1..." />
+          <div class="fence-actions">
+            <button class="btn-modal-secondary" id="btn-cancel-fence">Cancelar</button>
+            <button class="btn-modal-primary" id="btn-save-fence">Guardar Cerca</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- ========== BOTTOM NAV (Mobile) ========== -->
+    <nav class="bottom-nav" id="bottom-nav">
+      <button class="bottom-nav-item" id="nav-map" data-panel="map">
+        <span class="nav-icon">🗺️</span>
+        Mapa
+      </button>
+      <button class="bottom-nav-item" id="nav-cattle" data-panel="cattle">
+        <span class="nav-icon">🐄</span>
+        Ganado
+      </button>
+      <button class="bottom-nav-item" id="nav-alerts-mobile" data-panel="alerts">
+        <span class="nav-icon">🔔</span>
+        Alertas
+      </button>
+      <button class="bottom-nav-item" id="nav-history-mobile" data-panel="history">
+        <span class="nav-icon">📋</span>
+        Historial
+      </button>
+    </nav>
+
+    <!-- ========== PANELS / OVERLAYS ========== -->
+
+    <!-- Overlay backdrop -->
+    <div class="panel-overlay" id="panel-overlay"></div>
+
+    <!-- Alerts Panel -->
+    <aside class="alerts-panel" id="alerts-panel">
+      <div class="panel-header">
+        <h2>🔔 Alertas</h2>
+        <button class="panel-close" id="close-alerts-panel">✕</button>
+      </div>
+      <div class="panel-body">
+        <div class="alerts-list" id="alerts-list">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </aside>
+
+    <!-- History Panel -->
+    <div class="history-panel" id="history-panel">
+      <div class="history-handle"></div>
+      <div class="panel-header">
+        <h2>📋 Historial</h2>
+        <button class="panel-close" id="close-history-panel">✕</button>
+      </div>
+      <div class="panel-body">
+        <div class="history-list" id="history-list">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Fence Assignment Modal -->
+    <div class="modal-overlay" id="fence-modal">
+      <div class="modal">
+        <h3>🐄 Asignar Vacas a la Cerca</h3>
+        <div class="checkbox-list" id="fence-cattle-list">
+          <!-- Rendered by JS -->
+        </div>
+        <div class="modal-actions">
+          <button class="btn-modal-secondary" id="btn-cancel-assign">Cancelar</button>
+          <button class="btn-modal-primary" id="btn-confirm-assign">Confirmar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+  </div>
+
+  <!-- Google Maps -->
+  <script>
+    window.GOOGLE_MAPS_KEY = '%VITE_GOOGLE_MAPS_API_KEY%';
+  </script>
+  <script type="module" src="/src/js/app.js"></script>
+</body>
+</html>
