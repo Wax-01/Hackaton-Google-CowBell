@@ -41,7 +41,7 @@ function renderCattleList() {
     <div class="cattle-card status-${cow.status}" data-cow-id="${cow.id}" id="cattle-card-${cow.id}">
       <div class="cattle-card-header">
         <div class="cattle-name">
-          <span class="cow-emoji">🐄</span>
+          <span class="cow-emoji" style="width:8px;height:8px;border-radius:50%;background:var(--primary,#1B7A3D);display:inline-block"></span>
           ${cow.name} <span style="color:var(--text-muted);font-weight:400">#${cow.number}</span>
         </div>
         <span class="status-badge ${cow.status}">
@@ -50,20 +50,20 @@ function renderCattleList() {
       </div>
       <div class="cattle-stats">
         <div class="cattle-stat">
-          <span class="stat-icon">🌡️</span>
+          <span class="stat-icon" style="font-size:11px;font-weight:600">T°</span>
           <span class="stat-val">${cow.temperature}°C</span>
         </div>
         <div class="cattle-stat">
-          <span class="stat-icon">💓</span>
+          <span class="stat-icon" style="font-size:11px;font-weight:600">HR</span>
           <span class="stat-val">${cow.heartRate} bpm</span>
         </div>
         <div class="cattle-stat">
-          <span class="stat-icon">🏃</span>
+          <span class="stat-icon" style="font-size:11px;font-weight:600">Act</span>
           <span class="stat-val">${cow.activity}</span>
         </div>
         <div class="cattle-stat">
-          <span class="stat-icon">📍</span>
-          <span class="stat-val">${cow.fenceId ? '✅' : '—'}</span>
+          <span class="stat-icon" style="font-size:11px;font-weight:600">Loc</span>
+          <span class="stat-val">${cow.fenceId ? 'OK' : '—'}</span>
         </div>
       </div>
     </div>

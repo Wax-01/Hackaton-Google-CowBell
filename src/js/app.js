@@ -43,12 +43,12 @@ let currentFenceForAssignment = null;
 
 // ---------- Initialize Application ----------
 async function init() {
-  console.log('🐄 CowBell Dashboard - Inicializando...');
+  console.log('[CowBell] Dashboard - Inicializando...');
 
   try {
     // Load Google Maps
     await loadGoogleMaps();
-    console.log('✅ Google Maps cargado');
+    console.log('[OK] Google Maps cargado');
 
     // Initialize map
     initMap();
@@ -68,19 +68,19 @@ async function init() {
     setActiveNav('map');
 
     // On desktop, show cattle panel by default
-    if (window.innerWidth >= 1024) {
+    if (window.innerWidth >= 1024 && cattlePanel) {
       cattlePanel.classList.add('open');
     }
 
-    console.log('✅ CowBell Dashboard listo');
+    console.log('[OK] CowBell Dashboard listo');
   } catch (error) {
-    console.error('❌ Error inicializando:', error);
+    console.error('[ERROR] Error inicializando:', error);
     document.getElementById('map').innerHTML = `
-      <div style="display:flex;align-items:center;justify-content:center;height:100%;background:var(--bg-light);flex-direction:column;gap:16px;padding:20px;text-align:center">
-        <div style="font-size:64px">🗺️</div>
-        <h2 style="font-family:var(--font-display);color:var(--text)">Error al cargar el mapa</h2>
-        <p style="color:var(--text-muted)">Verifica tu conexión a internet y la API Key de Google Maps.</p>
-        <p style="color:var(--text-muted);font-size:13px">${error.message}</p>
+      <div style="display:flex;align-items:center;justify-content:center;height:100%;background:#F7F8FA;flex-direction:column;gap:16px;padding:20px;text-align:center">
+        <div style="width:64px;height:64px;background:#d1fae5;border-radius:50%;display:flex;align-items:center;justify-content:center"><svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='#10b981' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polygon points='1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6'/><line x1='8' y1='2' x2='8' y2='18'/><line x1='16' y1='6' x2='16' y2='22'/></svg></div>
+        <h2 style="font-family:'Inter',sans-serif;color:#1a1a2e;font-size:1.2rem">Error al cargar el mapa</h2>
+        <p style="color:#6b7280;font-size:0.85rem">Verifica tu conexion a internet y la API Key de Google Maps.</p>
+        <p style="color:#6b7280;font-size:0.78rem">${error.message}</p>
       </div>
     `;
   }
@@ -89,33 +89,40 @@ async function init() {
 // ---------- Event Listeners ----------
 function setupEventListeners() {
   // Draw fence button
-  btnDrawFence.addEventListener('click', () => {
+  btnDrawFence?.addEventListener('click', () => {
     if (btnDrawFence.classList.contains('active')) {
       // Cancel drawing
       cancelDrawing();
       btnDrawFence.classList.remove('active');
-      btnDrawFence.innerHTML = '✏️ Nueva Cerca';
+      btnDrawFence.innerHTML = '<i data-lucide="pen-tool" style="width:14px;height:14px"></i> Nueva Cerca';
+      if(window.lucide) lucide.createIcons();
     } else {
       enableDrawing();
       btnDrawFence.classList.add('active');
-      btnDrawFence.innerHTML = '❌ Cancelar Dibujo';
+      btnDrawFence.innerHTML = '<i data-lucide="x" style="width:14px;height:14px"></i> Cancelar';
+      if(window.lucide) lucide.createIcons();
     }
   });
 
   // When polygon is drawn, show name input
   bus.on('fence:polygonDrawn', () => {
-    fenceNameInput.classList.add('show');
-    fenceNameField.value = '';
-    fenceNameField.focus();
-    btnDrawFence.classList.remove('active');
-    btnDrawFence.innerHTML = '✏️ Nueva Cerca';
+    fenceNameInput?.classList.add('show');
+    if (fenceNameField) {
+      fenceNameField.value = '';
+      fenceNameField.focus();
+    }
+    if (btnDrawFence) {
+      btnDrawFence.classList.remove('active');
+      btnDrawFence.innerHTML = '<i data-lucide="pen-tool" style="width:14px;height:14px"></i> Nueva Cerca';
+      if(window.lucide) lucide.createIcons();
+    }
   });
 
   // Save fence
-  btnSaveFence.addEventListener('click', () => {
-    const name = fenceNameField.value.trim() || `Cerca ${getFences().length + 1}`;
+  btnSaveFence?.addEventListener('click', () => {
+    const name = fenceNameField?.value.trim() || `Cerca ${getFences().length + 1}`;
     const fence = confirmFence(name);
-    fenceNameInput.classList.remove('show');
+    fenceNameInput?.classList.remove('show');
 
     if (fence) {
       // Show assignment modal
@@ -124,45 +131,49 @@ function setupEventListeners() {
   });
 
   // Cancel fence
-  btnCancelFence.addEventListener('click', () => {
+  btnCancelFence?.addEventListener('click', () => {
     cancelDrawing();
-    fenceNameInput.classList.remove('show');
+    fenceNameInput?.classList.remove('show');
   });
 
   // Enter key on fence name
-  fenceNameField.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') btnSaveFence.click();
+  fenceNameField?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') btnSaveFence?.click();
   });
 
   // Toggle simulation
-  btnToggleSim.addEventListener('click', () => {
+  btnToggleSim?.addEventListener('click', () => {
     const running = toggleSimulation();
-    btnToggleSim.innerHTML = running ? '⏸️ Pausar' : '▶️ Reanudar';
-    simControl.classList.toggle('paused', !running);
-    simLabel.textContent = running ? 'Simulación activa' : 'Simulación pausada';
+    const simIcon = document.getElementById('sim-icon');
+    const simBtnLabel = document.getElementById('sim-btn-label');
+    if(simIcon) simIcon.setAttribute('data-lucide', running ? 'pause' : 'play');
+    if(simBtnLabel) simBtnLabel.textContent = running ? 'Pausar' : 'Reanudar';
+    if(window.lucide) lucide.createIcons();
+    simControl?.classList.toggle('paused', !running);
+    if (simLabel) simLabel.textContent = running ? 'Simulacion activa' : 'Simulacion pausada';
   });
 
   // Alerts panel
-  btnAlerts.addEventListener('click', () => togglePanel('alerts'));
-  closeAlertsPanel.addEventListener('click', () => closeAllPanels());
+  btnAlerts?.addEventListener('click', () => togglePanel('alerts'));
+  closeAlertsPanel?.addEventListener('click', () => closeAllPanels());
 
   // History panel
-  btnHistory.addEventListener('click', () => togglePanel('history'));
-  closeHistoryPanel.addEventListener('click', () => closeAllPanels());
+  btnHistory?.addEventListener('click', () => togglePanel('history'));
+  closeHistoryPanel?.addEventListener('click', () => closeAllPanels());
 
   // Cattle panel close (mobile)
-  closeCattlePanel.addEventListener('click', () => {
-    cattlePanel.classList.remove('open');
-    panelOverlay.classList.remove('active');
+  closeCattlePanel?.addEventListener('click', () => {
+    cattlePanel?.classList.remove('open');
+    panelOverlay?.classList.remove('active');
   });
 
   // Overlay click closes panels
-  panelOverlay.addEventListener('click', closeAllPanels);
+  panelOverlay?.addEventListener('click', closeAllPanels);
 
   // Fence assignment modal
-  btnConfirmAssign.addEventListener('click', () => {
+  btnConfirmAssign?.addEventListener('click', () => {
     if (currentFenceForAssignment) {
-      const checkedBoxes = fenceCattleList.querySelectorAll('input:checked');
+      const checkedBoxes = fenceCattleList?.querySelectorAll('input:checked') || [];
       const cattleIds = Array.from(checkedBoxes).map(cb => cb.value);
       assignCattleToFence(currentFenceForAssignment.id, cattleIds);
 
@@ -173,13 +184,13 @@ function setupEventListeners() {
         if (cow) cow.fenceId = currentFenceForAssignment.id;
       });
 
-      fenceModal.classList.remove('active');
+      fenceModal?.classList.remove('active');
       currentFenceForAssignment = null;
     }
   });
 
-  btnCancelAssign.addEventListener('click', () => {
-    fenceModal.classList.remove('active');
+  btnCancelAssign?.addEventListener('click', () => {
+    fenceModal?.classList.remove('active');
     currentFenceForAssignment = null;
   });
 
@@ -198,6 +209,8 @@ function togglePanel(panelName) {
   };
 
   const targetPanel = panels[panelName];
+  if (!targetPanel) return;
+
   const isOpen = targetPanel.classList.contains('open');
 
   // Close all panels first
@@ -206,7 +219,7 @@ function togglePanel(panelName) {
   // Open target if it wasn't open
   if (!isOpen) {
     targetPanel.classList.add('open');
-    panelOverlay.classList.add('active');
+    panelOverlay?.classList.add('active');
 
     if (panelName === 'alerts') {
       resetAlertCount();
@@ -217,11 +230,11 @@ function togglePanel(panelName) {
 function closeAllPanels() {
   // Don't close cattle panel on desktop
   if (window.innerWidth < 1024) {
-    cattlePanel.classList.remove('open');
+    cattlePanel?.classList.remove('open');
   }
-  alertsPanel.classList.remove('open');
-  historyPanel.classList.remove('open');
-  panelOverlay.classList.remove('active');
+  alertsPanel?.classList.remove('open');
+  historyPanel?.classList.remove('open');
+  panelOverlay?.classList.remove('active');
 }
 
 // ---------- Bottom Navigation (Mobile) ----------
@@ -264,7 +277,7 @@ function showAssignmentModal(fence) {
   fenceCattleList.innerHTML = cattle.map(cow => `
     <div class="checkbox-item">
       <input type="checkbox" id="assign-${cow.id}" value="${cow.id}" ${!cow.fenceId ? 'checked' : ''} />
-      <label for="assign-${cow.id}">🐄 ${cow.name} #${cow.number}</label>
+      <label for="assign-${cow.id}">${cow.name} #${cow.number}</label>
     </div>
   `).join('');
 

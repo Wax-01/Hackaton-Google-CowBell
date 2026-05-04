@@ -15,16 +15,15 @@
   <nav class="navbar" id="navbar">
     <div class="container">
       <a href="/" class="navbar-brand">
-        <span class="brand-icon">🔔</span>
-        COWBELL
+        <span class="brand-text">COWBELL</span>
       </a>
       <div class="navbar-links">
         <a href="#problema">Problema</a>
         <a href="#solucion">Solución</a>
         <a href="#como-funciona">Cómo Funciona</a>
-        <a href="#beneficios">Beneficios</a>
+
       </div>
-      <a href="/app.html" class="btn-nav" id="btn-nav-demo">Probar Demo</a>
+      <a href="/dashboard.html" class="btn-nav" id="btn-nav-demo">Probar Demo</a>
     </div>
   </nav>
 
@@ -48,7 +47,7 @@
         Monitorea, protege y gestiona tu ganado en tiempo real. Sin cercas físicas, sin costos excesivos, con la tecnología más avanzada.
       </p>
       <div class="hero-actions">
-        <a href="/app.html" class="btn-primary" id="btn-hero-demo">
+        <a href="/dashboard.html" class="btn-primary" id="btn-hero-demo">
           Probar Demo
           <span class="arrow">→</span>
         </a>
@@ -81,23 +80,35 @@
   <section class="section section-problem" id="problema">
     <div class="container">
       <div class="section-header animate-on-scroll">
-        <span class="section-label">⚠️ El Problema</span>
+        <span class="section-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> El Problema</span>
         <h2 class="section-title">La ganadería tradicional enfrenta grandes desafíos</h2>
         <p class="section-subtitle">Los métodos convencionales son costosos, ineficientes y ponen en riesgo la seguridad del ganado.</p>
       </div>
       <div class="problem-grid">
         <div class="problem-card animate-on-scroll">
-          <div class="card-icon">💸</div>
+          <div class="card-icon-wrapper">
+            <div class="card-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            </div>
+          </div>
           <h3>Costos Elevados</h3>
           <p>Las cercas físicas cuestan miles de dólares por kilómetro. El mantenimiento constante incrementa los gastos operativos año tras año.</p>
         </div>
-        <div class="problem-card animate-on-scroll">
-          <div class="card-icon">👁️</div>
+        <div class="problem-card animate-on-scroll" style="transition-delay: 0.1s">
+          <div class="card-icon-wrapper">
+            <div class="card-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </div>
+          </div>
           <h3>Monitoreo Manual</h3>
           <p>Recorrer kilómetros a caballo para verificar el ganado. Imposible cubrir toda el área las 24 horas del día.</p>
         </div>
-        <div class="problem-card animate-on-scroll">
-          <div class="card-icon">🐄</div>
+        <div class="problem-card animate-on-scroll" style="transition-delay: 0.2s">
+          <div class="card-icon-wrapper">
+            <div class="card-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+            </div>
+          </div>
           <h3>Pérdida de Animales</h3>
           <p>Cada año se pierden miles de cabezas de ganado por escapes, robo o depredadores. Sin alertas, la reacción siempre llega tarde.</p>
         </div>
@@ -105,30 +116,49 @@
     </div>
   </section>
 
-  <!-- ========== SOLUCIÓN ========== -->
+  <!-- ========== SOLUCIÓN IA ========== -->
   <section class="section section-solution" id="solucion">
     <div class="container">
       <div class="section-header animate-on-scroll">
-        <span class="section-label">✅ La Solución</span>
-        <h2 class="section-title">Tecnología que protege tu ganado</h2>
-        <p class="section-subtitle">CowBell combina IoT, inteligencia artificial y cercas virtuales para revolucionar la ganadería.</p>
+        <span class="section-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg> Impulsado por IA</span>
+        <h2 class="section-title">Inteligencia que revoluciona tu finca</h2>
+        <p class="section-subtitle">Descubre cómo nuestros algoritmos avanzados y asistente virtual te dan una ventaja injusta, prediciendo y optimizando 24/7.</p>
       </div>
       <div class="solution-grid">
+        
+        <!-- Card 1 -->
         <div class="solution-card animate-on-scroll">
-          <div class="card-icon">📡</div>
-          <h3>Collares IoT</h3>
-          <p>Dispositivos GPS ligeros en cada animal que envían ubicación, temperatura y actividad en tiempo real.</p>
+          <div class="solution-card-image">
+            <img src="/src/assets/ai_cow_predictive.png" alt="Análisis Predictivo" />
+          </div>
+          <div class="solution-card-content">
+            <h3>Salud Predictiva</h3>
+            <p>Monitoreamos el comportamiento de cada animal. Nuestra IA aprende sus patrones y detecta signos de enfermedad, celo o estrés días antes de que sean visibles para el ojo humano.</p>
+          </div>
         </div>
-        <div class="solution-card animate-on-scroll">
-          <div class="card-icon">🧠</div>
-          <h3>Inteligencia Artificial</h3>
-          <p>Algoritmos que detectan patrones anormales, predicen comportamientos y generan alertas inteligentes.</p>
+        
+        <!-- Card 2 -->
+        <div class="solution-card animate-on-scroll" style="transition-delay: 0.1s">
+          <div class="solution-card-image">
+            <img src="/src/assets/ai_pasture_optimization.png" alt="Optimización de Pastos" />
+          </div>
+          <div class="solution-card-content">
+            <h3>Optimización de Pastos</h3>
+            <p>Las cercas virtuales no solo encierran; nuestra IA sugiere las rotaciones de pastoreo óptimas basándose en la biomasa, humedad del suelo y clima, maximizando el rendimiento de tus tierras.</p>
+          </div>
         </div>
-        <div class="solution-card animate-on-scroll">
-          <div class="card-icon">🗺️</div>
-          <h3>Cercas Virtuales</h3>
-          <p>Delimita zonas seguras desde tu celular. Sin postes, sin alambres. Flexible y modificable al instante.</p>
+        
+        <!-- Card 3 -->
+        <div class="solution-card animate-on-scroll" style="transition-delay: 0.2s">
+          <div class="solution-card-image">
+            <img src="/src/assets/ai_farmer_bot.png" alt="Asistente Bot" />
+          </div>
+          <div class="solution-card-content">
+            <h3>Asistente 24/7 en tu bolsillo</h3>
+            <p>Conéctate por WhatsApp y chatea con tu rebaño. Recibe alertas accionables, pregunta por vacas específicas y obtén consejos veterinarios instantáneos, todo en lenguaje natural.</p>
+          </div>
         </div>
+        
       </div>
     </div>
   </section>
@@ -137,65 +167,133 @@
   <section class="section section-steps" id="como-funciona">
     <div class="container">
       <div class="section-header animate-on-scroll">
-        <span class="section-label">🔧 Cómo Funciona</span>
+        <span class="section-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> Cómo Funciona</span>
         <h2 class="section-title">3 pasos simples para empezar</h2>
         <p class="section-subtitle">Configurar CowBell es tan fácil como usar tu celular.</p>
       </div>
-      <div class="steps-container">
-        <div class="step-card animate-on-scroll">
-          <div class="step-number">1</div>
-          <div class="step-icon">📱</div>
-          <h3>Coloca el Collar</h3>
-          <p>Pon el collar IoT en cada animal. Se conecta automáticamente y empieza a transmitir datos.</p>
-        </div>
-        <div class="step-card animate-on-scroll">
-          <div class="step-number">2</div>
-          <div class="step-icon">✏️</div>
-          <h3>Define tu Cerca</h3>
-          <p>Dibuja la zona segura en el mapa desde el dashboard. Puedes modificarla cuando quieras.</p>
-        </div>
-        <div class="step-card animate-on-scroll">
-          <div class="step-number">3</div>
-          <div class="step-icon">🔔</div>
-          <h3>Recibe Alertas</h3>
-          <p>Si un animal sale de la zona, recibes una notificación inmediata en tu celular.</p>
+      <div class="steps-wrapper">
+        <div class="steps-container">
+          <div class="step-card animate-on-scroll">
+            <div class="step-icon-wrapper">
+              <div class="step-number">1</div>
+              <div class="step-icon">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </div>
+            </div>
+            <div class="step-content">
+              <h3>Coloca el Collar</h3>
+              <p>Pon el collar IoT en cada animal. Se conecta automáticamente y empieza a transmitir datos en tiempo real.</p>
+            </div>
+          </div>
+          <div class="step-card animate-on-scroll" style="transition-delay: 0.1s">
+            <div class="step-icon-wrapper">
+              <div class="step-number">2</div>
+              <div class="step-icon">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg>
+              </div>
+            </div>
+            <div class="step-content">
+              <h3>Define tu Cerca</h3>
+              <p>Dibuja la zona segura en el mapa interactivo desde tu dashboard. Puedes modificarla al instante según el clima.</p>
+            </div>
+          </div>
+          <div class="step-card animate-on-scroll" style="transition-delay: 0.2s">
+            <div class="step-icon-wrapper">
+              <div class="step-number">3</div>
+              <div class="step-icon">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+              </div>
+            </div>
+            <div class="step-content">
+              <h3>Recibe Alertas</h3>
+              <p>Si un animal sale de la zona, o si la IA detecta una anomalía de salud, recibes una notificación inmediata.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ========== BENEFICIOS ========== -->
-  <section class="section section-benefits" id="beneficios">
+
+  <!-- ========== DETAILED FEATURES ========== -->
+  <section class="section-features-grid" id="caracteristicas-detalladas">
     <div class="container">
-      <div class="section-header animate-on-scroll">
-        <span class="section-label">🌟 Beneficios</span>
-        <h2 class="section-title">¿Por qué elegir CowBell?</h2>
-        <p class="section-subtitle">Resultados reales que transforman tu operación ganadera.</p>
+      <div class="features-grid-header animate-on-scroll">
+        <div class="header-left">
+          <h2>Gestiona tu finca como siempre quisiste.</h2>
+        </div>
+        <div class="header-right">
+          <p>La app y el collar que te permiten tener la finca más productiva. Crea cercas virtuales, mueve y monitorea vacas con datos en tiempo real sobre animales y pastos, 24/7.</p>
+          <a href="/app.html" class="btn-primary-dark">
+            Chatea con nosotros
+            <span class="arrow">→</span>
+          </a>
+        </div>
       </div>
-      <div class="benefits-grid">
-        <div class="benefit-card animate-on-scroll">
-          <div class="benefit-icon">💰</div>
-          <div class="benefit-value">60%</div>
-          <h3>Ahorro en Costos</h3>
-          <p>Elimina la necesidad de cercas físicas costosas y su mantenimiento continuo.</p>
+      
+      <div class="features-grid-content animate-on-scroll">
+        <!-- Feature 1 -->
+        <div class="feature-card">
+          <div class="feature-image">
+            <img src="/src/assets/hero-bg.png" alt="Cercas virtuales" />
+            <div class="feature-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg>
+            </div>
+          </div>
+          <h3>Cercas virtuales y movimiento</h3>
+          <ul class="feature-list">
+            <li><span class="check">✓</span> Mueve y gestiona rebaños remotamente</li>
+            <li><span class="check">✓</span> Establece cercas sin postes ni alambres</li>
+            <li><span class="check">✓</span> Cambia al siguiente pasto con un botón</li>
+          </ul>
         </div>
-        <div class="benefit-card animate-on-scroll">
-          <div class="benefit-icon">🛡️</div>
-          <div class="benefit-value">24/7</div>
-          <h3>Seguridad Total</h3>
-          <p>Monitoreo continuo sin descanso. Tu ganado protegido cada segundo del día.</p>
+        
+        <!-- Feature 2 -->
+        <div class="feature-card">
+          <div class="feature-image">
+            <img src="/src/assets/farmer_portrait_1.png" alt="Gestión de pastos" />
+            <div class="feature-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+            </div>
+          </div>
+          <h3>Gestión de pastos</h3>
+          <ul class="feature-list">
+            <li><span class="check">✓</span> Planifica y pastorea con precisión</li>
+            <li><span class="check">✓</span> Toma decisiones de asignación informadas</li>
+            <li><span class="check">✓</span> Datos en tiempo real de crecimiento de pasto</li>
+          </ul>
         </div>
-        <div class="benefit-card animate-on-scroll">
-          <div class="benefit-icon">⚡</div>
-          <div class="benefit-value">&lt;5s</div>
-          <h3>Alertas Instantáneas</h3>
-          <p>Notificaciones al instante cuando un animal sale de la zona segura.</p>
+        
+        <!-- Feature 3 -->
+        <div class="feature-card">
+          <div class="feature-image">
+            <img src="/src/assets/cowbell_dairy.png" alt="Monitoreo de salud" />
+            <div class="feature-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            </div>
+          </div>
+          <h3>Monitoreo de celo y salud</h3>
+          <ul class="feature-list">
+            <li><span class="check">✓</span> Detección automática de celo</li>
+            <li><span class="check">✓</span> Alertas de cambios en salud o comportamiento</li>
+            <li><span class="check">✓</span> Rastreo de ubicación animal 24/7</li>
+          </ul>
         </div>
-        <div class="benefit-card animate-on-scroll">
-          <div class="benefit-icon">📊</div>
-          <div class="benefit-value">IA</div>
-          <h3>Datos Inteligentes</h3>
-          <p>Análisis de comportamiento, salud y patrones para tomar mejores decisiones.</p>
+        
+        <!-- Feature 4 (AI Bot) -->
+        <div class="feature-card">
+          <div class="feature-image">
+            <img src="/src/assets/farmer_couple.png" alt="Asistente de IA" />
+            <div class="feature-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+            </div>
+          </div>
+          <h3>Asistente IA experto</h3>
+          <ul class="feature-list">
+            <li><span class="check">✓</span> Resuelve dudas veterinarias al instante</li>
+            <li><span class="check">✓</span> Análisis predictivo de datos de la finca</li>
+            <li><span class="check">✓</span> Interfaz conversacional fácil por WhatsApp</li>
+          </ul>
         </div>
       </div>
     </div>
@@ -318,7 +416,7 @@
     <div class="container">
       <div class="cta-content animate-on-scroll">
         <h2>¿Listo para modernizar tu finca?</h2>
-        <a href="/app.html" class="btn-cta-dark" id="btn-cta-demo">
+        <a href="/dashboard.html" class="btn-cta-dark" id="btn-cta-demo">
           Prueba CowBell en tu finca
           <span>→</span>
         </a>
@@ -332,22 +430,39 @@
       <div class="footer-top">
         <div class="footer-brand-col">
           <a href="/" class="footer-brand">
-            <span class="brand-icon">🔔</span>
             CowBell
           </a>
           <div class="footer-region">
-            <span class="region-icon">🌐</span> América Latina
+            <img src="/src/assets/icons/icon-globe.svg" alt="Globe" class="region-icon" style="width: 16px; height: 16px; filter: brightness(0) invert(1); opacity: 0.8;"> América Latina
           </div>
         </div>
         <div class="footer-links-wrapper">
           <div class="footer-links-col">
-            <h3>Soluciones <span class="arrow">↓</span></h3>
+            <h3>Soluciones <img src="/src/assets/icons/icon-chevron-down.svg" class="arrow" style="width: 16px; height: 16px; filter: brightness(0) invert(1);" /></h3>
+            <ul class="footer-list">
+              <li><a href="#">Ganado Lechero</a></li>
+              <li><a href="#">Ganado de Carne</a></li>
+              <li><a href="#">Cercas Virtuales</a></li>
+              <li><a href="#">Monitoreo de Salud</a></li>
+            </ul>
           </div>
           <div class="footer-links-col">
-            <h3>Recursos <span class="arrow">↓</span></h3>
+            <h3>Recursos <img src="/src/assets/icons/icon-chevron-down.svg" class="arrow" style="width: 16px; height: 16px; filter: brightness(0) invert(1);" /></h3>
+            <ul class="footer-list">
+              <li><a href="#">Centro de Ayuda</a></li>
+              <li><a href="#">Blog</a></li>
+              <li><a href="#">Casos de Éxito</a></li>
+              <li><a href="#">Guías de Uso</a></li>
+            </ul>
           </div>
           <div class="footer-links-col">
-            <h3>Empresa <span class="arrow">↓</span></h3>
+            <h3>Empresa <img src="/src/assets/icons/icon-chevron-down.svg" class="arrow" style="width: 16px; height: 16px; filter: brightness(0) invert(1);" /></h3>
+            <ul class="footer-list">
+              <li><a href="#">Sobre Nosotros</a></li>
+              <li><a href="#">Contacto</a></li>
+              <li><a href="#">Carreras</a></li>
+              <li><a href="#">Prensa</a></li>
+            </ul>
           </div>
         </div>
       </div>
@@ -359,9 +474,6 @@
           <a href="#">Términos de Servicio</a>
           <span class="divider">|</span>
           <a href="#">Política de Privacidad</a>
-        </div>
-        <div class="footer-cert">
-          <div class="cert-placeholder">CERTIFICADO<br>ECO</div>
         </div>
       </div>
       <div class="footer-copyright">

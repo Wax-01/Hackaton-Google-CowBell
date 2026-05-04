@@ -34,9 +34,9 @@ try {
   app = initializeApp(firebaseConfig);
   db = getFirestore(app);
   firebaseReady = true;
-  console.log('🔥 Firebase conectado correctamente');
+  console.log('[Firebase] Conectado correctamente');
 } catch (error) {
-  console.warn('⚠️ Firebase no disponible, usando modo local:', error.message);
+  console.warn('[Firebase] No disponible, usando modo local:', error.message);
 }
 
 /**
@@ -51,7 +51,7 @@ export function isFirebaseReady() {
  */
 export async function saveFence(fenceData) {
   if (!firebaseReady) {
-    console.log('📦 Fence saved locally:', fenceData);
+    console.log('[Local] Fence saved:', fenceData);
     return fenceData.id;
   }
   try {
@@ -86,7 +86,7 @@ export async function loadFences() {
  */
 export async function logEvent(eventData) {
   if (!firebaseReady) {
-    console.log('📝 Event logged locally:', eventData);
+    console.log('[Local] Event logged:', eventData);
     return;
   }
   try {

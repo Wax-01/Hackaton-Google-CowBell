@@ -38,21 +38,21 @@ export function initAlerts() {
         if (result.status === 'danger') {
           addAlert({
             type: 'critical',
-            emoji: '🚨',
+            emoji: '!',
             message: `Vaca #${cow.number} (${cow.name}) salió de la ${result.fenceName}`,
             cow: cow
           });
         } else if (result.status === 'warning' && prevStatus !== 'danger') {
           addAlert({
             type: 'warning',
-            emoji: '⚠️',
+            emoji: '!',
             message: `Vaca #${cow.number} (${cow.name}) se acerca al límite de la ${result.fenceName}`,
             cow: cow
           });
         } else if (result.status === 'normal' && prevStatus === 'danger') {
           addAlert({
             type: 'info',
-            emoji: '✅',
+            emoji: 'OK',
             message: `Vaca #${cow.number} (${cow.name}) regresó a la ${result.fenceName}`,
             cow: cow
           });
@@ -151,7 +151,7 @@ function renderAlerts() {
   if (alerts.length === 0) {
     alertsListEl.innerHTML = `
       <div style="text-align:center;padding:40px 20px;color:var(--text-muted)">
-        <div style="font-size:48px;margin-bottom:12px">🔔</div>
+        <div style="font-size:48px;margin-bottom:12px;width:48px;height:48px;background:#d1fae5;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px"><svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='#10b981' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9'/><path d='M10.3 21a1.94 1.94 0 0 0 3.4 0'/></svg></div>
         <p>No hay alertas todavía</p>
         <p style="font-size:12px;margin-top:4px">Las alertas aparecerán aquí cuando una vaca salga de su zona segura</p>
       </div>
@@ -162,7 +162,7 @@ function renderAlerts() {
   alertsListEl.innerHTML = alerts.map(alert => `
     <div class="alert-bubble" id="${alert.id}">
       <div class="alert-avatar ${alert.type}">
-        ${alert.type === 'critical' ? '🚨' : alert.type === 'warning' ? '⚠️' : '✅'}
+        ${alert.type === 'critical' ? '!' : alert.type === 'warning' ? '!' : 'OK'}
       </div>
       <div class="alert-body">
         <div class="alert-message ${alert.type}">

@@ -111,7 +111,7 @@ export function initMap() {
     checkFences(cattle);
   });
 
-  console.log('🗺️ Mapa inicializado');
+  console.log('[OK] Mapa inicializado');
 }
 
 /**
@@ -162,22 +162,22 @@ function getCowIcon(status) {
  */
 function showCowInfoWindow(cow, marker) {
   const statusLabels = {
-    normal: '<span style="color:#27AE60;font-weight:700">✅ Normal</span>',
-    warning: '<span style="color:#F5A623;font-weight:700">⚠️ Advertencia</span>',
-    danger: '<span style="color:#E74C3C;font-weight:700">🚨 Fuera de zona</span>'
+    normal: '<span style="color:#27AE60;font-weight:700">Normal</span>',
+    warning: '<span style="color:#F5A623;font-weight:700">Advertencia</span>',
+    danger: '<span style="color:#E74C3C;font-weight:700">FUERA DE ZONA</span>'
   };
 
   const content = `
     <div style="font-family:Inter,sans-serif;padding:8px;min-width:200px">
       <div style="font-size:16px;font-weight:700;margin-bottom:8px">
-        🐄 ${cow.name} <span style="color:#888">#${cow.number}</span>
+        ${cow.name} <span style="color:#888">#${cow.number}</span>
       </div>
       <div style="margin-bottom:6px">${statusLabels[cow.status]}</div>
       <div style="font-size:13px;color:#555;line-height:1.8">
-        🌡️ Temp: <strong>${cow.temperature}°C</strong><br/>
-        💓 Pulso: <strong>${cow.heartRate} bpm</strong><br/>
-        🏃 Actividad: <strong>${cow.activity}</strong><br/>
-        📍 ${cow.lat.toFixed(5)}, ${cow.lng.toFixed(5)}
+        Temp: <strong>${cow.temperature}°C</strong><br/>
+        Pulso: <strong>${cow.heartRate} bpm</strong><br/>
+        Actividad: <strong>${cow.activity}</strong><br/>
+        Coords: ${cow.lat.toFixed(5)}, ${cow.lng.toFixed(5)}
       </div>
     </div>
   `;

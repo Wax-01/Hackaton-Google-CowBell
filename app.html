@@ -1,178 +1,308 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="CowBell Dashboard - Monitorea tu ganado en tiempo real con cercas virtuales inteligentes." />
-  <title>CowBell — Dashboard</title>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="stylesheet" href="/src/css/variables.css" />
-  <link rel="stylesheet" href="/src/css/dashboard.css" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="CowBell Dashboard - Monitorea tu ganado en tiempo real con cercas virtuales inteligentes."/>
+<title>CowBell — Mapa Interactivo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#FFFFFF;--sidebar-bg:#F7F8FA;--accent:#10b981;--accent-light:#d1fae5;
+  --accent-dark:#059669;--text:#1a1a2e;--text-secondary:#6b7280;
+  --card-shadow:0 2px 12px rgba(0,0,0,0.07);--radius-lg:16px;--radius-sm:10px;
+  --terminal-bg:#1a1a2e;--warning:#fb923c;--warning-bg:rgba(251,146,60,0.12);
+  --info:#3b82f6;--info-bg:rgba(59,130,246,0.12);--danger:#ef4444;
+  --border:#e5e7eb;--border-light:#f3f4f6;
+}
+html{font-size:14px;}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);overflow:hidden;height:100vh;}
+
+/* ===== LAYOUT ===== */
+.app{display:grid;grid-template-columns:64px 1fr;height:100vh;width:100vw;}
+
+/* ===== SIDEBAR ===== */
+.sidebar{background:var(--sidebar-bg);display:flex;flex-direction:column;align-items:center;padding:16px 0;border-right:1px solid var(--border);z-index:10;}
+.sidebar-logo{width:40px;height:40px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;margin-bottom:24px;transition:transform 0.2s;}
+.sidebar-logo:hover{transform:scale(1.05);}
+.sidebar-nav{display:flex;flex-direction:column;gap:8px;flex:1;}
+.sidebar-nav a{width:40px;height:40px;border:none;background:transparent;border-radius:var(--radius-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);transition:all .2s;text-decoration:none;}
+.sidebar-nav a:hover,.sidebar-nav a.active{background:var(--accent-light);color:var(--accent);}
+.sidebar-bottom{margin-top:auto;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:9px;color:var(--text-secondary);font-weight:500;letter-spacing:0.3px;}
+.online-dot{width:10px;height:10px;background:var(--accent);border-radius:50%;position:relative;}
+.online-dot::after{content:'';position:absolute;top:-3px;left:-3px;width:16px;height:16px;border-radius:50%;background:rgba(16,185,129,0.35);animation:pulse 2s infinite;}
+@keyframes pulse{0%{transform:scale(1);opacity:1;}100%{transform:scale(2.2);opacity:0;}}
+
+/* ===== MAIN ===== */
+.main{display:grid;grid-template-columns:minmax(260px,30%) 1fr;height:100vh;overflow:hidden;}
+.controls-col{padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;background:var(--sidebar-bg);}
+.map-col{position:relative;}
+#map{width:100%;height:100%;}
+
+/* ===== CARDS ===== */
+.card{background:var(--bg);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--card-shadow);}
+.card-label{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+
+/* Greeting */
+.greeting h2{font-size:1.35rem;font-weight:700;margin-bottom:2px;}
+.greeting .subtitle{color:var(--text-secondary);font-size:0.85rem;}
+
+/* Stats Row */
+.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.stat-card{background:var(--bg);border-radius:var(--radius-sm);padding:14px;box-shadow:var(--card-shadow);text-align:center;}
+.stat-card .stat-value{font-size:1.6rem;font-weight:700;line-height:1;}
+.stat-card .stat-label{font-size:0.72rem;color:var(--text-secondary);margin-top:4px;font-weight:500;}
+.stat-card.success .stat-value{color:var(--accent);}
+.stat-card.warning .stat-value{color:var(--warning);}
+.stat-card.danger .stat-value{color:var(--danger);}
+
+/* Cattle List */
+.cattle-list{display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto;padding-right:4px;}
+.cattle-card{background:var(--sidebar-bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;transition:all .2s;cursor:pointer;}
+.cattle-card:hover{border-color:var(--accent);transform:translateX(4px);box-shadow:var(--card-shadow);}
+.cattle-card.status-warning{border-left:4px solid var(--warning);}
+.cattle-card.status-danger{border-left:4px solid var(--danger);background:rgba(239,68,68,0.04);}
+.cattle-card.status-normal{border-left:4px solid var(--accent);}
+.cattle-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.cattle-name{font-weight:700;font-size:0.85rem;display:flex;align-items:center;gap:6px;}
+.status-badge{padding:2px 8px;border-radius:12px;font-size:0.7rem;font-weight:700;text-transform:uppercase;}
+.status-badge.normal{background:var(--accent-light);color:var(--accent-dark);}
+.status-badge.warning{background:var(--warning-bg);color:var(--warning);}
+.status-badge.danger{background:rgba(239,68,68,0.1);color:var(--danger);}
+.cattle-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.cattle-stat{display:flex;align-items:center;gap:6px;font-size:0.75rem;color:var(--text-secondary);}
+.cattle-stat .stat-val{font-weight:600;color:var(--text);}
+
+/* Controls */
+.control-row{display:flex;gap:8px;}
+.control-btn{flex:1;padding:10px;border:none;border-radius:var(--radius-sm);font-size:0.82rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s;}
+.control-btn.primary{background:var(--accent);color:#fff;}
+.control-btn.primary:hover{background:var(--accent-dark);}
+.control-btn.primary.active{background:var(--danger);color:#fff;}
+.control-btn.secondary{background:var(--bg);border:1.5px solid var(--border);color:var(--text-secondary);}
+.control-btn.secondary:hover{border-color:var(--accent);color:var(--accent);}
+.control-btn.secondary.paused{border-color:var(--warning);color:var(--warning);}
+
+/* Fence Name Input */
+.fence-input-card{display:none;background:var(--bg);border-radius:var(--radius-lg);padding:16px;box-shadow:var(--card-shadow);}
+.fence-input-card.show{display:block;}
+.fence-input-card h4{font-size:0.9rem;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.fence-input-card input{width:100%;padding:8px 12px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:0.85rem;color:var(--text);background:var(--sidebar-bg);transition:border-color .2s;}
+.fence-input-card input:focus{border-color:var(--accent);outline:none;}
+.fence-actions{display:flex;gap:8px;margin-top:10px;}
+.fence-actions button{flex:1;padding:8px;border-radius:var(--radius-sm);font-weight:600;font-size:0.82rem;border:none;cursor:pointer;transition:all .2s;}
+.btn-save{background:var(--accent);color:#fff;}
+.btn-save:hover{background:var(--accent-dark);}
+.btn-cancel{background:var(--sidebar-bg);color:var(--text-secondary);border:1.5px solid var(--border);}
+.btn-cancel:hover{border-color:var(--danger);color:var(--danger);}
+
+/* Alerts Section */
+#alerts-list{max-height:250px;overflow-y:auto;padding-right:4px;}
+.alert-bubble{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border-light);}
+.alert-bubble:last-child{border:none;}
+.alert-avatar{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:2px;}
+.alert-avatar.critical{background:var(--danger);color:#fff;}
+.alert-avatar.warning{background:var(--warning);color:#fff;}
+.alert-avatar.info{background:var(--accent);color:#fff;}
+.alert-body{flex:1;}
+.alert-message{font-size:0.82rem;color:var(--text);line-height:1.4;}
+.alert-time{font-size:0.72rem;color:var(--text-secondary);margin-top:4px;}
+
+/* ===== MAP OVERLAYS ===== */
+.map-legend{position:absolute;bottom:20px;left:20px;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border-radius:var(--radius-sm);padding:12px 16px;box-shadow:var(--card-shadow);z-index:5;display:flex;gap:16px;font-size:0.75rem;font-weight:500;}
+.legend-item{display:flex;align-items:center;gap:6px;}
+.legend-color{width:12px;height:12px;border-radius:3px;}
+
+.sim-indicator{position:absolute;bottom:20px;right:20px;display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border-radius:var(--radius-sm);box-shadow:var(--card-shadow);z-index:5;font-size:0.75rem;font-weight:600;color:var(--text-secondary);}
+.sim-dot{width:8px;height:8px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite;}
+.sim-indicator.paused .sim-dot{background:var(--text-secondary);animation:none;}
+
+/* ===== MODAL ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:50;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;visibility:hidden;transition:all .25s;}
+.modal-overlay.active{opacity:1;visibility:visible;}
+.modal{background:var(--bg);border-radius:var(--radius-lg);padding:24px;max-width:400px;width:100%;box-shadow:0 16px 48px rgba(0,0,0,0.12);}
+.modal h3{font-size:1.1rem;font-weight:700;margin-bottom:16px;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;}
+.modal-actions{display:flex;gap:8px;margin-top:16px;}
+.modal-actions button{flex:1;padding:10px;border-radius:var(--radius-sm);font-weight:600;font-size:0.85rem;border:none;cursor:pointer;transition:all .2s;}
+.btn-modal-primary{background:var(--accent);color:#fff;}
+.btn-modal-primary:hover{background:var(--accent-dark);}
+.btn-modal-secondary{background:var(--sidebar-bg);color:var(--text-secondary);border:1.5px solid var(--border);}
+.checkbox-list{display:flex;flex-direction:column;gap:6px;max-height:240px;overflow-y:auto;}
+.checkbox-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--sidebar-bg);border-radius:var(--radius-sm);cursor:pointer;transition:background .2s;}
+.checkbox-item:hover{background:var(--accent-light);}
+.checkbox-item input[type="checkbox"]{width:16px;height:16px;accent-color:var(--accent);}
+.checkbox-item label{font-size:0.85rem;font-weight:500;cursor:pointer;flex:1;}
+
+/* ===== TOAST ===== */
+.toast-container{position:fixed;top:20px;right:20px;z-index:60;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
+.toast{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--bg);border-radius:var(--radius-sm);box-shadow:0 8px 32px rgba(0,0,0,0.1);border-left:4px solid var(--danger);pointer-events:auto;max-width:340px;animation:slideIn .3s ease;}
+.toast.warning{border-left-color:var(--warning);}
+.toast.info{border-left-color:var(--accent);}
+@keyframes slideIn{from{opacity:0;transform:translateX(30px);}to{opacity:1;transform:translateX(0);}}
+
+/* ===== INFO WINDOW ===== */
+.info-window{font-family:'Inter',sans-serif;padding:4px;}
+.info-window h4{font-size:0.85rem;font-weight:700;margin-bottom:6px;color:var(--text);}
+.info-window .info-row{display:flex;justify-content:space-between;font-size:0.78rem;padding:3px 0;border-bottom:1px solid var(--border-light);}
+.info-window .info-row:last-child{border:none;}
+.info-window .info-label{color:var(--text-secondary);}
+.info-window .info-val{font-weight:600;}
+.info-window .info-val.alert{color:var(--danger);}
+.info-window .info-val.ok{color:var(--accent);}
+
+/* ===== SCROLLBAR ===== */
+.controls-col::-webkit-scrollbar{width:4px;}
+.controls-col::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:2px;}
+.cattle-list::-webkit-scrollbar{width:3px;}
+.cattle-list::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:2px;}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px){
+  .app{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+  .main{grid-template-columns:1fr;grid-template-rows:auto 55vh;}
+  .controls-col{max-height:45vh;}
+}
+</style>
 </head>
 <body>
-
-  <div class="dashboard" id="dashboard">
-
-    <!-- ========== HEADER ========== -->
-    <header class="dash-header">
-      <a href="/" class="dash-brand">
-        <span class="brand-icon">🔔</span>
-        <span>COWBELL</span>
-      </a>
-      <div class="dash-header-actions">
-        <div class="dash-status">
-          <span class="dot"></span>
-          Simulación activa
-        </div>
-        <button class="btn-icon" id="btn-alerts" title="Alertas">
-          🔔
-        </button>
-        <button class="btn-icon" id="btn-history" title="Historial">
-          📋
-        </button>
-      </div>
-    </header>
-
-    <!-- ========== MAIN CONTENT ========== -->
-    <main class="dash-main">
-
-      <!-- Cattle Panel (sidebar on desktop, drawer on mobile) -->
-      <aside class="cattle-panel open" id="cattle-panel">
-        <div class="panel-header">
-          <h2>🐄 Ganado</h2>
-          <button class="panel-close" id="close-cattle-panel">✕</button>
-        </div>
-        <div class="panel-body">
-          <div class="cattle-list" id="cattle-list">
-            <!-- Rendered by JS -->
-          </div>
-        </div>
-      </aside>
-
-      <!-- Map Area -->
-      <div class="map-container">
-        <div id="map"></div>
-
-        <!-- Map Controls -->
-        <div class="map-controls">
-          <button class="map-control-btn" id="btn-draw-fence" title="Dibujar nueva cerca">
-            ✏️ Nueva Cerca
-          </button>
-          <button class="map-control-btn" id="btn-toggle-sim" title="Pausar/reanudar simulación">
-            ⏸️ Pausar
-          </button>
-        </div>
-
-        <!-- Map Stats -->
-        <div class="map-stats" id="map-stats">
-          <div class="map-stat-card success">
-            <div class="stat-value" id="stat-safe">0</div>
-            <div class="stat-label">Seguras</div>
-          </div>
-          <div class="map-stat-card warning">
-            <div class="stat-value" id="stat-warning">0</div>
-            <div class="stat-label">Alerta</div>
-          </div>
-          <div class="map-stat-card danger">
-            <div class="stat-value" id="stat-danger">0</div>
-            <div class="stat-label">Fuera</div>
-          </div>
-        </div>
-
-        <!-- Simulation Status -->
-        <div class="sim-control" id="sim-control">
-          <span class="sim-dot"></span>
-          <span id="sim-label">Simulación activa</span>
-        </div>
-
-        <!-- Fence Name Input -->
-        <div class="fence-name-input" id="fence-name-input">
-          <h4>🗺️ Nombre de la Cerca</h4>
-          <input type="text" id="fence-name" placeholder="Ej: Zona Norte, Potrero 1..." />
-          <div class="fence-actions">
-            <button class="btn-modal-secondary" id="btn-cancel-fence">Cancelar</button>
-            <button class="btn-modal-primary" id="btn-save-fence">Guardar Cerca</button>
-          </div>
-        </div>
-      </div>
-
-    </main>
-
-    <!-- ========== BOTTOM NAV (Mobile) ========== -->
-    <nav class="bottom-nav" id="bottom-nav">
-      <button class="bottom-nav-item" id="nav-map" data-panel="map">
-        <span class="nav-icon">🗺️</span>
-        Mapa
-      </button>
-      <button class="bottom-nav-item" id="nav-cattle" data-panel="cattle">
-        <span class="nav-icon">🐄</span>
-        Ganado
-      </button>
-      <button class="bottom-nav-item" id="nav-alerts-mobile" data-panel="alerts">
-        <span class="nav-icon">🔔</span>
-        Alertas
-      </button>
-      <button class="bottom-nav-item" id="nav-history-mobile" data-panel="history">
-        <span class="nav-icon">📋</span>
-        Historial
-      </button>
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">NG</div>
+    <nav class="sidebar-nav">
+      <a href="/" title="Volver a la Landing"><i data-lucide="home" style="width:20px;height:20px"></i></a>
+      <a href="/dashboard.html" title="Dashboard"><i data-lucide="layout-dashboard" style="width:20px;height:20px"></i></a>
+      <a href="/salud.html" title="Salud Animal"><i data-lucide="heart-pulse" style="width:20px;height:20px"></i></a>
+      <a href="/app.html" class="active" title="Mapa Interactivo"><i data-lucide="map" style="width:20px;height:20px"></i></a>
+      <a href="#" title="Alertas"><i data-lucide="bell" style="width:20px;height:20px"></i></a>
+      <a href="#" title="Configuracion"><i data-lucide="settings" style="width:20px;height:20px"></i></a>
     </nav>
+    <div class="sidebar-bottom"><div class="online-dot"></div>ONLINE</div>
+  </aside>
 
-    <!-- ========== PANELS / OVERLAYS ========== -->
-
-    <!-- Overlay backdrop -->
-    <div class="panel-overlay" id="panel-overlay"></div>
-
-    <!-- Alerts Panel -->
-    <aside class="alerts-panel" id="alerts-panel">
-      <div class="panel-header">
-        <h2>🔔 Alertas</h2>
-        <button class="panel-close" id="close-alerts-panel">✕</button>
+  <!-- MAIN -->
+  <div class="main">
+    <!-- CONTROLS COLUMN -->
+    <div class="controls-col">
+      <!-- Greeting -->
+      <div class="card greeting">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div>
+            <h2>Mapa Interactivo</h2>
+            <p class="subtitle">Cercado virtual y seguimiento GPS</p>
+          </div>
+          <a href="/" title="Volver a la Landing" style="background:var(--accent-light);color:var(--accent-dark);padding:8px 12px;border-radius:var(--radius-sm);font-size:0.8rem;font-weight:600;display:flex;align-items:center;gap:6px;text-decoration:none;transition:all 0.2s;">
+            <i data-lucide="home" style="width:14px;height:14px"></i>
+            Volver
+          </a>
+        </div>
       </div>
-      <div class="panel-body">
-        <div class="alerts-list" id="alerts-list">
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card success">
+          <div class="stat-value" id="stat-safe">0</div>
+          <div class="stat-label">Seguras</div>
+        </div>
+        <div class="stat-card warning">
+          <div class="stat-value" id="stat-warning">0</div>
+          <div class="stat-label">Alerta</div>
+        </div>
+        <div class="stat-card danger">
+          <div class="stat-value" id="stat-danger">0</div>
+          <div class="stat-label">Fuera</div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="control-row">
+        <button class="control-btn primary" id="btn-draw-fence" title="Dibujar nueva cerca">
+          <i data-lucide="pen-tool" style="width:14px;height:14px"></i> Nueva Cerca
+        </button>
+        <button class="control-btn secondary" id="btn-toggle-sim" title="Pausar/reanudar simulacion">
+          <i data-lucide="pause" style="width:14px;height:14px" id="sim-icon"></i> <span id="sim-btn-label">Pausar</span>
+        </button>
+      </div>
+
+      <!-- Fence Name Input -->
+      <div class="fence-input-card" id="fence-name-input">
+        <h4><i data-lucide="map-pin" style="width:16px;height:16px"></i> Nombre de la Cerca</h4>
+        <input type="text" id="fence-name" placeholder="Ej: Zona Norte, Potrero 1..."/>
+        <div class="fence-actions">
+          <button class="btn-cancel" id="btn-cancel-fence">Cancelar</button>
+          <button class="btn-save" id="btn-save-fence">Guardar</button>
+        </div>
+      </div>
+
+      <!-- Cattle Panel -->
+      <div class="card">
+        <div class="card-label"><i data-lucide="scan-search" style="width:14px;height:14px"></i> Ganado</div>
+        <div class="cattle-list" id="cattle-list">
           <!-- Rendered by JS -->
         </div>
       </div>
-    </aside>
 
-    <!-- History Panel -->
-    <div class="history-panel" id="history-panel">
-      <div class="history-handle"></div>
-      <div class="panel-header">
-        <h2>📋 Historial</h2>
-        <button class="panel-close" id="close-history-panel">✕</button>
-      </div>
-      <div class="panel-body">
-        <div class="history-list" id="history-list">
+      <!-- Alerts -->
+      <div class="card">
+        <div class="card-label"><i data-lucide="bell" style="width:14px;height:14px"></i> Alertas recientes</div>
+        <div id="alerts-list">
           <!-- Rendered by JS -->
         </div>
       </div>
     </div>
 
-    <!-- Fence Assignment Modal -->
-    <div class="modal-overlay" id="fence-modal">
-      <div class="modal">
-        <h3>🐄 Asignar Vacas a la Cerca</h3>
-        <div class="checkbox-list" id="fence-cattle-list">
-          <!-- Rendered by JS -->
-        </div>
-        <div class="modal-actions">
-          <button class="btn-modal-secondary" id="btn-cancel-assign">Cancelar</button>
-          <button class="btn-modal-primary" id="btn-confirm-assign">Confirmar</button>
-        </div>
+    <!-- MAP COLUMN -->
+    <div class="map-col">
+      <div id="map"></div>
+      <div class="map-legend">
+        <div class="legend-item"><div class="legend-color" style="background:rgba(16,185,129,0.45);border:2px solid #10b981"></div>Cerca Activa</div>
+        <div class="legend-item"><div class="legend-color" style="background:rgba(16,185,129,0.2);border:2px solid #10b981"></div>Zona Segura</div>
+        <div class="legend-item"><div class="legend-color" style="background:rgba(251,146,60,0.25);border:2px solid #fb923c"></div>Fuera de Cerca</div>
+      </div>
+      <div class="sim-indicator" id="sim-control">
+        <span class="sim-dot"></span>
+        <span id="sim-label">Simulacion activa</span>
       </div>
     </div>
-
-    <!-- Toast Container -->
-    <div class="toast-container" id="toast-container"></div>
-
   </div>
+</div>
 
-  <!-- Google Maps -->
-  <script>
-    window.GOOGLE_MAPS_KEY = '%VITE_GOOGLE_MAPS_API_KEY%';
-  </script>
-  <script type="module" src="/src/js/app.js"></script>
+<!-- Fence Assignment Modal -->
+<div class="modal-overlay" id="fence-modal">
+  <div class="modal">
+    <h3><i data-lucide="git-branch" style="width:20px;height:20px"></i> Asignar Vacas a la Cerca</h3>
+    <div class="checkbox-list" id="fence-cattle-list">
+      <!-- Rendered by JS -->
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal-secondary" id="btn-cancel-assign">Cancelar</button>
+      <button class="btn-modal-primary" id="btn-confirm-assign">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- Panels (hidden, for JS compatibility) -->
+<div id="panel-overlay" style="display:none;"></div>
+<aside id="cattle-panel" class="open" style="display:none;"></aside>
+<aside id="alerts-panel" style="display:none;"></aside>
+<div id="history-panel" style="display:none;"></div>
+
+<script>
+// ===== LUCIDE ICONS =====
+document.addEventListener('DOMContentLoaded', () => { if(window.lucide) lucide.createIcons(); });
+</script>
+
+<!-- Google Maps -->
+<script>
+  window.GOOGLE_MAPS_KEY = '%VITE_GOOGLE_MAPS_API_KEY%';
+</script>
+<script type="module" src="/src/js/app.js"></script>
 </body>
 </html>
